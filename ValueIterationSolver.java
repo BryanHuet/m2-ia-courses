@@ -19,10 +19,12 @@ public class ValueIterationSolver<S, A>{
     public RewardFunction<S,A> backup(RewardFunction<S,A> initialRF){
         double currentMax = -10000.1;
         for (S state : this.mdp.states()){
-            Double som = 0;
+            Double som = 0.1;
             for(A action: this.mdp.actions(state)){
-                for (S nextState: this.mdp.getTransitionFunction().getNextStatesDistribution(state,action)){
-                    som += this.mdp.getTransitionFunction().getTransitionProbability(state,action,nextState);
+                for (S nextState: this.mdp.getTransitionFunction().getNextStatesDistribution(state,action).support()){
+                    som += this.mdp.getTransitionFunction().getTransitionProbability(state,action,nextState)
+                        * ((initialRF.getReward(state,action,nextState)
+                            + gamma * this.backup(this.mdp.getRewardFunction()).getReward(state,action,nextState)));
                 }
             }
         }
