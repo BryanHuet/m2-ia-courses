@@ -16,23 +16,40 @@ public class ValueIterationSolver<S, A>{
     
     }
 
-    public RewardFunction<S,A> backup(RewardFunction<S,A> initialRF){
+    public Double backup1(S initialState){
         double currentMax = -10000.1;
-        for (S state : this.mdp.states()){
-            Double som = 0.1;
-            for(A action: this.mdp.actions(state)){
-                for (S nextState: this.mdp.getTransitionFunction().getNextStatesDistribution(state,action).support()){
-                    som += this.mdp.getTransitionFunction().getTransitionProbability(state,action,nextState)
-                        * ((initialRF.getReward(state,action,nextState)
-                            + gamma * this.backup(this.mdp.getRewardFunction()).getReward(state,action,nextState)));
-                }
+        double som = 0.0;
+        for(A action: this.mdp.actions(initialState)){
+            for (S nextState: this.mdp.getTransitionFunction().getNextStatesDistribution(initialState,action).support()){
+                som += this.mdp.getTransitionFunction().getTransitionProbability(initialState,action,nextState)
+                    * ((this.mdp.getRewardFunction().getReward(initialState,action,nextState)
+                        + gamma * this.backup1(nextState)));
+            }
+            if (som >= currentMax){
+                currentMax=som;
             }
         }
 
-        return null;
+        return currentMax;
     }
 
+    public RewardFunction<S,A> backup (RewardFunction<A,S> initialReward){
+        return new RewardFunction<S, A>() {
+            @Override
+            public double getReward(S s, A a, S s1) {
+                return 0;
+            }
+        };
+    }
 
+    public StationaryPolicy<S,A> buildPolicy(){
+        return new StationaryPolicy<S, A>() {
+            @Override
+            public A get(S s) {
+                return null;
+            }
+        };
+    }
 
 
 
