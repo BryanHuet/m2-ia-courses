@@ -39,7 +39,7 @@ public class Main{
         //AdHocIslandsPolicy policy = new AdHocIslandsPolicy(map);
 
         double gamma = 0.9;
-        double epsilon = 0.1;
+        double epsilon = 0.5;
         ValueIterationSolver<BWState, BWAction> solver = new ValueIterationSolver<>(mdp, gamma, epsilon);
         StationaryPolicy<BWState, BWAction> policy = solver.buildPolicy();
 
@@ -49,7 +49,7 @@ public class Main{
         // Agent definition, at a random initial state
         int row = rand.nextInt(map.height);
         int col = rand.nextInt(map.width);
-        BWState initialState = mdp.stateFactory.getState(row, col, 0);
+        BWState initialState = mdp.stateFactory.getState(95, 98, 0);
         Agent<BWState> agent = new Agent<>(initialState);
         System.out.println("Agent created at initial state " + initialState);
 
